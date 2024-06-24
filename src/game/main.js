@@ -10,9 +10,16 @@ import { Preloader } from './scenes/Preloader';
 const config = {
     type: Phaser.AUTO,
     width: 1024,
-    height: 768,
+    height: 700,
     parent: 'game-container',
     backgroundColor: '#028af8',
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 300 }, // This will simulate the falling effect
+            debug: false
+        }
+    },
     scene: [
         Boot,
         Preloader,

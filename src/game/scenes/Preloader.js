@@ -34,6 +34,15 @@ export class Preloader extends Scene
 
         this.load.image('logo', 'logo.png');
         this.load.image('star', 'star.png');
+        this.load.image('hook', 'hook2.png');
+        this.load.image('fish', 'fish.png');
+        this.load.image('perch', 'perch_game.png');
+        this.load.image('pike', 'pike_game.png');
+        this.load.image('roach', 'roach_game.png');
+        this.load.image('zander', 'zander_game.png');
+        this.load.image('underwater_bg', 'underwater_bg.png');
+        this.load.audio('catch', 'score_sound.wav');
+        //let ball = this.physics.add.circle(this.cameras.main.centerX, this.cameras.main.centerY, 50, 0xff0000);
     }
 
     create ()
