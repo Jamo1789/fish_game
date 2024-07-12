@@ -6,12 +6,15 @@ export class Game extends Scene
     constructor ()
     {
         super('Game');
+        this.bucketSize = 3; // Maximum bucket size
+        this.fishCaught = 0;
     }
     create() {
         // Add the underwater background image
         const canvas_w = this.game.canvas.width;
         const canvas_h = this.game.canvas.height;
         this.add.image(0, 0, 'underwater_bg').setOrigin(0).setDisplaySize(canvas_w, canvas_h);
+        
 
 // Enable physics in the scene
 this.physics.world.setBounds(0, 0, canvas_w, canvas_h);
@@ -64,6 +67,7 @@ this.physics.world.setBounds(0, 0, canvas_w, canvas_h);
         const fish = this.add.image(Phaser.Math.Between(50, canvasWidth - 50), y, fishInfo.key).setDepth(1);
         fish.setDisplaySize(fishInfo.width, fishInfo.height);
         fish.speed = Phaser.Math.Between(50, 100) * (Math.random() < 0.5 ? 1 : -1);
+        fish.spawnTime = this.time.now;
         this.fishGroup.add(fish);
     }
 
@@ -108,12 +112,16 @@ this.physics.world.setBounds(0, 0, canvas_w, canvas_h);
         }
 
         // Move fish horizontally
+        const currentTime = this.time.now;
         this.fishGroup.getChildren().forEach((fish) => {
             if (fish.active) { // Ensure the fish is still active
                 fish.x += fish.speed * 0.016; // Adjust the speed as needed
                 if (fish.x < 0 || fish.x > this.game.canvas.width) {
                     fish.speed *= -1; // Reverse direction at screen edges
                     fish.setFlipX(fish.speed < 0); // Adjust flip based on new speed
+                }
+                if (fish.x < 0 && fish.x > this.game.canvas.width && currentTime - fish.spawnTime >= 30000){
+                    fish.destroy();
                 }
             }
         });
@@ -141,11 +149,12 @@ this.physics.world.setBounds(0, 0, canvas_w, canvas_h);
             // Check for collision with fish
             this.fishGroup.getChildren().forEach((fish) => {
                 if (fish.active && Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), fish.getBounds())) {
+                    if (this.fishCaught < this.bucketSize) {
                     fish.destroy();
-                    this.score += 1;
-                    this.scoreText.setText('Caught: ' + this.score);
+                    this.fishCaught += 1;
+                    this.scoreText.setText('Caught: ' + this.fishCaught);
                     this.catchSound.play(); // Play the catch sound
-                }
+                }}
             });
         }
     }
